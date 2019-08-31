@@ -11,20 +11,6 @@
 
 
 using namespace std;
-
-/*
-	Made this because the shit one I use in interfacing is completely fucked.
-*/
-jclass getClassByName(JNIEnv* env, const char* qualifiedName)
-{
-
-	// Get the class from the JNIEnvironment.
-	jclass clazz = env->FindClass(qualifiedName);
-
-
-	return clazz;
-}
-
 /*
 
 	Written by Harry Kerr (C) 
