@@ -1,16 +1,14 @@
 /*
 	MIT LICENSE. Written by NoSharp or Harry Kerr, Please use if you need to.
 */
-
-
 #pragma once
 
 #include <iostream>
 #include "jni.h"
 #include <map>
 
-
 using namespace std;
+
 /*
 
 	Written by Harry Kerr (C) 
@@ -55,21 +53,20 @@ class jReflectionsWrapper
 		/*
 			get's all methods in a class.
 		*/
-		map<string, jobject> *getMethods(jobject obj)
+		map<string, jobject> *getMethods(jobject clazz)
 		{	
-			jclass cls = env->GetObjectClass(obj);
-
+			jclass cls = env->GetObjectClass(clazz);
+			/*
 			// Get methods
 			jmethodID mid = env->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
-			jobject clsObj = env->CallObjectMethod(obj, mid);
-
+			jobject clsObj = env->CallObjectMethod(cls, mid);
+			*/
 			
 			// Returns an array of methods
 			jmethodID methodID = this->env->GetMethodID(cls, "getDeclaredMethods", "()[Ljava/lang/reflect/Method;");
-			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clsObj, methodID);
+			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clazz, methodID);
 
 			
-
 			int methodLength = this->env->GetArrayLength(methodArray);
 			string* methods = new string[methodLength];
 
