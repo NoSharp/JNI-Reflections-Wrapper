@@ -1,6 +1,3 @@
-/*
-	MIT LICENSE. Written by NoSharp or Harry Kerr, Please use if you need to.
-*/
 #pragma once
 
 #include <iostream>
@@ -55,21 +52,15 @@ class jReflectionsWrapper
 		*/
 		map<string, jobject> *getMethods(jobject clazz)
 		{	
+
 			jclass cls = env->GetObjectClass(clazz);
-			/*
-			// Get methods
-			jmethodID mid = env->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
-			jobject clsObj = env->CallObjectMethod(cls, mid);
-			*/
-			
+
 			// Returns an array of methods
 			jmethodID methodID = this->env->GetMethodID(cls, "getDeclaredMethods", "()[Ljava/lang/reflect/Method;");
 			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clazz, methodID);
 
-			
 			int methodLength = this->env->GetArrayLength(methodArray);
 			string* methods = new string[methodLength];
-
 			
 			map<string, jobject>* stringLookupTable = new map<string, jobject>();
 
@@ -89,5 +80,50 @@ class jReflectionsWrapper
 			
 			return stringLookupTable;
 		}
+		/*
+			get's all Fields in a class.
+		*/
+		map<string, jobject>* getFields(jobject clazz)
+		{
 
+			jclass cls = env->GetObjectClass(clazz); // .class Equiv
+
+			// Returns an array of methods
+
+			jmethodID methodID = this->env->GetMethodID(cls, "getDeclaredFields", "()[Ljava/lang/reflect/Field;");
+			if (methodID == NULL) {
+				cout << "METHOIDID IS NIL." << endl;
+			
+			}
+			cout << methodID << endl;
+
+			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clazz, methodID);
+			cout << "METHOD ARRAY: " << methodArray << endl;
+
+			int methodLength = this->env->GetArrayLength(methodArray);
+			string* methods = new string[methodLength];
+
+			map<string, jobject>* stringLookupTable = new map<string, jobject>();
+
+			for (int i = 0; i < methodLength; i++) {
+
+				jobject jOb = (jobject)this->env->GetObjectArrayElement(methodArray, i);
+				
+				cout << "Java OBJECT: " << jOb << endl;;
+
+				jmethodID fId = this->env->GetMethodID(this->reflectionsClass, "toString", "()Ljava/lang/String;");
+
+				cout << "FIELD ID: " << fId << endl;
+
+				jstring name = (jstring)this->env->CallObjectMethod(jOb, fId);
+				
+
+				string normalized = env->GetStringUTFChars(name, 0);
+
+				stringLookupTable->insert(pair<string, jobject>(normalized, jOb));
+
+			}
+
+			return stringLookupTable;
+		}
 };
