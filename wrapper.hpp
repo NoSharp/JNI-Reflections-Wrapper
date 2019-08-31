@@ -1,3 +1,29 @@
+/*
+	MIT LICENSE. Written by NoSharp or Harry Kerr, Please use if you need to.
+*/
+
+
+#pragma once
+
+#include <iostream>
+#include "jni.h"
+#include <map>
+
+
+using namespace std;
+
+/*
+	Made this because the shit one I use in interfacing is completely fucked.
+*/
+jclass getClassByName(JNIEnv* env, const char* qualifiedName)
+{
+
+	// Get the class from the JNIEnvironment.
+	jclass clazz = env->FindClass(qualifiedName);
+
+
+	return clazz;
+}
 
 /*
 
@@ -43,7 +69,7 @@ class jReflectionsWrapper
 		/*
 			get's all methods in a class.
 		*/
-		void getMethods(jobject obj) 
+		map<string, jobject> *getMethods(jobject obj)
 		{	
 			jclass cls = env->GetObjectClass(obj);
 
@@ -51,11 +77,9 @@ class jReflectionsWrapper
 			jmethodID mid = env->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
 			jobject clsObj = env->CallObjectMethod(obj, mid);
 
-			cout << "Get methodID" << endl;
 			
 			// Returns an array of methods
 			jmethodID methodID = this->env->GetMethodID(cls, "getDeclaredMethods", "()[Ljava/lang/reflect/Method;");
-			cout << "METHODID getMethod: " << methodID << endl;
 			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clsObj, methodID);
 
 			
@@ -64,22 +88,23 @@ class jReflectionsWrapper
 			string* methods = new string[methodLength];
 
 			
+			map<string, jobject>* stringLookupTable = new map<string, jobject>();
+
 			for (int i = 0; i < methodLength; i++) {
 			
 				jobject jOb = (jobject)this->env->GetObjectArrayElement(methodArray, i);
 				
 				jmethodID fId = this->env->GetMethodID(this->reflectionsClass, "getName", "()Ljava/lang/String;" );
 
-				cout << "ID FOUND:" << fId << endl;
-
 				jstring name = (jstring)this->env->CallObjectMethod(jOb, fId);
-				cout << "METHODID: " << env->GetStringUTFChars(name,0) << endl;
-				
 
+				string normalized = env->GetStringUTFChars(name, 0);
+
+				stringLookupTable->insert(pair<string, jobject>(normalized, jOb));
 
 			}
 			
-			
+			return stringLookupTable;
 		}
 
 };
