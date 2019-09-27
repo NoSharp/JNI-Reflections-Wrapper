@@ -95,7 +95,7 @@ class jReflectionsWrapper
 				cout << "METHOIDID IS NIL." << endl;
 			
 			}
-			cout << methodID << endl;
+			//cout << methodID << endl;
 
 			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clazz, methodID);
 			//cout << "METHOD ARRAY: " << methodArray << endl;
