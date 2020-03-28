@@ -33,8 +33,6 @@ class jReflectionsWrapper
 		
 				cout << "Can't find reflections class." << endl;
 			}
-
-			//cout << "REFLECTIONS CLASS POINTER: " << this->reflectionsClass << endl;
 		}
 
 		/*
@@ -95,10 +93,8 @@ class jReflectionsWrapper
 				cout << "METHOIDID IS NIL." << endl;
 			
 			}
-			//cout << methodID << endl;
 
 			jobjectArray methodArray = (jobjectArray)this->env->CallObjectMethod(clazz, methodID);
-			//cout << "METHOD ARRAY: " << methodArray << endl;
 
 			int methodLength = this->env->GetArrayLength(methodArray);
 			string* methods = new string[methodLength];
@@ -109,15 +105,10 @@ class jReflectionsWrapper
 
 				jobject jOb = (jobject)this->env->GetObjectArrayElement(methodArray, i);
 				
-				//cout << "Java OBJECT: " << jOb << endl;;
-
 				jmethodID fId = this->env->GetMethodID(this->reflectionsClass, "toString", "()Ljava/lang/String;");
-
-				//cout << "FIELD ID: " << fId << endl;
-
+			
 				jstring name = (jstring)this->env->CallObjectMethod(jOb, fId);
 				
-
 				string normalized = env->GetStringUTFChars(name, 0);
 
 				stringLookupTable->insert(pair<string, jobject>(normalized, jOb));
